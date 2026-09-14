@@ -1,0 +1,1 @@
+// ShareService implementation placeholder.

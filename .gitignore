@@ -1,0 +1,16 @@
+# Build output
+build/
+cmake-build-*/
+
+# Dependencies
+frontend/node_modules/
+frontend/dist/
+
+# Runtime data and secrets
+data/
+*.conf
+!*.conf.template
+
+# Test reports
+tests/reports/*
+!tests/reports/.gitkeep

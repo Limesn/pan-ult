@@ -1,0 +1,1 @@
+// MySQLUserRepository implementation placeholder.

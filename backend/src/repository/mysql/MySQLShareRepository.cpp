@@ -1,0 +1,1 @@
+// MySQLShareRepository implementation placeholder.

@@ -1,0 +1,1 @@
+// RedisSessionRepository implementation placeholder.

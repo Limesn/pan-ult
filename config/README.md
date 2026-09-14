@@ -1,0 +1,3 @@
+# 配置说明
+
+不要提交真实密钥。`MYSQL_USER`、`MYSQL_PASSWORD`、`FEISHU_APP_ID`、`FEISHU_APP_SECRET` 和 `JWT_SECRET` 应通过环境变量注入。

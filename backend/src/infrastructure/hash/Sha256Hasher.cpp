@@ -1,0 +1,1 @@
+// Sha256Hasher implementation placeholder.

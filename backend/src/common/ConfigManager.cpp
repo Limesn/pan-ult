@@ -1,0 +1,1 @@
+// ConfigManager implementation placeholder.

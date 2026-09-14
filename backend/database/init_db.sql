@@ -1,0 +1,30 @@
+CREATE DATABASE IF NOT EXISTS pan_ult;
+USE pan_ult;
+
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    feishu_open_id VARCHAR(64) UNIQUE NOT NULL,
+    name VARCHAR(64),
+    avatar_url VARCHAR(256),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS file_meta (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    file_hash CHAR(64) NOT NULL,
+    file_name VARCHAR(256) NOT NULL,
+    file_size BIGINT NOT NULL,
+    mime_type VARCHAR(128),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS shares (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    file_id BIGINT NOT NULL,
+    share_code VARCHAR(16) UNIQUE NOT NULL,
+    expire_at DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (file_id) REFERENCES file_meta(id)
+);

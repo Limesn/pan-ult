@@ -1,0 +1,1 @@
+// ShareController implementation placeholder.

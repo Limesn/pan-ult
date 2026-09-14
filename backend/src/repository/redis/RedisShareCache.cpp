@@ -1,0 +1,1 @@
+// RedisShareCache implementation placeholder.
