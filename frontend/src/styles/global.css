@@ -3,23 +3,25 @@
   line-height: 1.5;
   font-weight: 400;
   color: #1f2d3d;
-  background: #f5f7fa;
+  background: #f4faff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --primary: #4a90e2;
-  --primary-soft: #e8f1fc;
-  --primary-strong: #a78bfa;
-  --bg: #f5f7fa;
+  --primary: #45b8f0;
+  --primary-soft: #e8f6fd;
+  --primary-strong: #1c9fe0;
+  --accent: #a78bfa;
+  --accent-soft: #f3f0ff;
+  --bg: #f4faff;
   --card: #ffffff;
   --text: #1f2d3d;
   --subtext: #6b7a8f;
-  --border: #e4e8ee;
+  --border: #e3edf5;
   --success: #34c759;
   --warning: #ff9f0a;
   --error: #ff3b30;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow: 0 2px 8px rgba(69, 184, 240, 0.08);
 }
 
 * {
@@ -47,7 +49,7 @@ a {
 }
 
 .el-button--primary {
-  background: linear-gradient(135deg, #4a90e2, #a78bfa);
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
   border: none;
 }
 

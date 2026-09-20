@@ -93,7 +93,7 @@ const cancelShare = (id: number) => {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #4a90e2, #a78bfa);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   color: white;
   display: flex;
   align-items: center;

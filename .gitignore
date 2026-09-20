@@ -6,6 +6,9 @@ cmake-build-*/
 frontend/node_modules/
 frontend/dist/
 
+# Local env overrides (not shared, may contain machine-specific settings)
+frontend/.env*.local
+
 
 
 # Documentation repository (managed separately)

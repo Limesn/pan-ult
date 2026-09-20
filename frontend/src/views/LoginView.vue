@@ -7,6 +7,8 @@
         <p>轻量团队文件分享网盘</p>
       </div>
 
+      <el-tag v-if="isMockEnabled" class="mock-tag" type="warning" effect="light">测试模式（模拟数据）</el-tag>
+
       <el-button class="login-button" type="primary" size="large" @click="handleLogin">
         飞书登录
       </el-button>
@@ -19,20 +21,36 @@
 </template>
 
 <script setup lang="ts">
-import { ElButton, ElMessage } from 'element-plus'
+import { ElButton, ElMessage, ElTag } from 'element-plus'
+import { useRouter } from 'vue-router'
 import { getFeishuAuthUrl } from '@/api/auth'
-import { apiBaseUrl } from '@/api/request'
+import { apiBaseUrl, isMockEnabled } from '@/api/request'
+import { useUserStore } from '@/store/user'
+import { mockUser } from '@/mock/fixtures'
+
+const router = useRouter()
+const userStore = useUserStore()
 
 const handleLogin = async () => {
   try {
     const res = await getFeishuAuthUrl()
     const url = res.data?.data?.url
-    if (url) {
-      window.location.href = url
+
+    if (!url) {
+      ElMessage.error('未获取到飞书授权地址')
       return
     }
 
-    ElMessage.error('未获取到飞书授权地址')
+    if (isMockEnabled) {
+      // 测试模式：跳过真实飞书授权，直接写入模拟登录态
+      userStore.setToken('mock-dev-token')
+      userStore.setUserInfo(mockUser)
+      ElMessage.success('已使用测试账号登录')
+      router.push('/files')
+      return
+    }
+
+    window.location.href = url
   } catch (error) {
     ElMessage.error('飞书登录失败，请检查 API 配置')
     console.error(error)
@@ -46,7 +64,7 @@ const handleLogin = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(74, 144, 226, 0.12), rgba(167, 139, 250, 0.12));
+  background: linear-gradient(135deg, rgba(69, 184, 240, 0.14), rgba(167, 139, 250, 0.12));
 }
 
 .login-card {
@@ -69,8 +87,8 @@ const handleLogin = async () => {
   font-size: 28px;
   font-weight: 700;
   color: white;
-  background: linear-gradient(135deg, #4a90e2, #a78bfa);
-  box-shadow: 0 8px 24px rgba(74, 144, 226, 0.18);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  box-shadow: 0 8px 24px rgba(69, 184, 240, 0.25);
 }
 
 .brand-block h1 {
@@ -87,6 +105,10 @@ const handleLogin = async () => {
   width: 100%;
   height: 48px;
   font-size: 16px;
+}
+
+.mock-tag {
+  margin-bottom: 16px;
 }
 
 .api-note {

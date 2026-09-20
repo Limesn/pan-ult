@@ -105,7 +105,7 @@ const formatSize = (size: number) => {
 }
 
 .status.processing {
-  background: rgba(74, 144, 226, 0.12);
+  background: rgba(69, 184, 240, 0.12);
   color: var(--primary);
 }
 
@@ -131,7 +131,7 @@ const formatSize = (size: number) => {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #4a90e2, #a78bfa);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   color: white;
   display: flex;
   align-items: center;

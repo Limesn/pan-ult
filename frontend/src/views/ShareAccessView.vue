@@ -31,7 +31,7 @@ const password = ref('')
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(74, 144, 226, 0.12), rgba(167, 139, 250, 0.12));
+  background: linear-gradient(135deg, rgba(69, 184, 240, 0.14), rgba(167, 139, 250, 0.12));
 }
 
 .share-card {
@@ -50,7 +50,7 @@ const password = ref('')
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #4a90e2, #a78bfa);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   color: white;
   display: flex;
   align-items: center;
