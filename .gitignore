@@ -6,6 +6,11 @@ cmake-build-*/
 frontend/node_modules/
 frontend/dist/
 
+
+
+# Documentation repository (managed separately)
+doc/
+
 # Runtime data and secrets
 data/
 *.conf
