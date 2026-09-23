@@ -107,11 +107,54 @@ pan-ult/
 ### 环境要求
 
 - Linux（Ubuntu 22.04 推荐）
-- GCC 9+、CMake 3.16+
+- GCC 9+、CMake 3.16+、Drogon
 - MySQL 8.0+
 - Redis 6.0+
 - Node.js 18+、npm/pnpm
 - OpenSSL 开发库
+
+### 安装依赖环境（Ubuntu/Debian）
+
+安装 C++ 构建工具、Drogon 的编译依赖、MySQL/Redis 服务及项目的开发库。必须先安装 MySQL 开发库，再构建 Drogon，否则 Drogon 不会启用 MySQL 支持：
+
+```bash
+sudo apt update
+sudo apt install -y build-essential cmake git pkg-config curl ca-certificates \
+    libjsoncpp-dev uuid-dev zlib1g-dev libssl-dev libbrotli-dev \
+    default-libmysqlclient-dev libhiredis-dev libgtest-dev \
+    mysql-server mysql-client redis-server
+```
+
+安装 Drogon。该框架不包含在 Ubuntu 22.04 的基础软件源中，需从源码安装：
+
+```bash
+git clone --recurse-submodules https://github.com/drogonframework/drogon.git /tmp/drogon
+cmake -S /tmp/drogon -B /tmp/drogon/build -DCMAKE_BUILD_TYPE=Release
+cmake --build /tmp/drogon/build -j"$(nproc)"
+sudo cmake --install /tmp/drogon/build
+sudo ldconfig
+```
+
+安装 Node.js 20（满足前端 Node.js 18+ 的要求）：
+
+```bash
+curl -fsSL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh
+sudo -E bash /tmp/nodesource_setup.sh
+sudo apt install -y nodejs
+```
+
+确认工具版本、Drogon 安装结果并启动本地依赖服务：
+
+```bash
+c++ --version
+cmake --version
+node --version
+npm --version
+drogon_ctl --version
+sudo systemctl enable --now mysql redis-server
+```
+
+其他 Linux 发行版请安装对应的软件包，并确保 `c++`、`cmake`、`node` 和 `npm` 可在 `PATH` 中使用。
 
 ### 1. 克隆仓库
 
@@ -120,32 +163,56 @@ git clone https://github.com/yourname/pan-ult.git
 cd pan-ult
 ```
 
-### 2. 初始化数据库
+### 2. 初始化本地配置
+
+运行环境初始化脚本。它会检查构建所需命令，创建运行时数据目录，并仅在配置不存在时从模板生成配置文件：
 
 ```bash
-mysql -u root -p < backend/database/init_db.sql
+./scripts/setup_env.sh
+```
+
+创建仅能访问本项目数据库的本地账户，并导入数据库结构。请为密码替换一个安全的值：
+
+```bash
+sudo mysql <<'SQL'
+CREATE USER IF NOT EXISTS 'pan_ult'@'127.0.0.1' IDENTIFIED BY 'change-me';
+GRANT ALL PRIVILEGES ON pan_ult.* TO 'pan_ult'@'127.0.0.1';
+FLUSH PRIVILEGES;
+SQL
+
+mysql -h 127.0.0.1 -u pan_ult -p pan_ult < backend/database/init_db.sql
+```
+
+设置运行所需的敏感环境变量。请将示例值替换为真实凭据，且不要提交到仓库：
+
+```bash
+export MYSQL_USER=pan_ult
+export MYSQL_PASSWORD='change-me'
+export FEISHU_APP_ID='your-app-id'
+export FEISHU_APP_SECRET='your-app-secret'
+export JWT_SECRET='replace-with-a-long-random-secret'
 ```
 
 ### 3. 配置后端
 
-复制配置模板并填入真实信息（或使用环境变量）：
+环境初始化脚本会创建以下本地配置文件：
 
 ```bash
-cp backend/config/server.conf.template backend/config/server.conf
-cp backend/config/feishu.conf.template backend/config/feishu.conf
+config/server.conf
+config/feishu.conf
 ```
 
-编辑 `server.conf` 设置 MySQL、Redis、JWT 密钥等；  
-编辑 `feishu.conf` 填入飞书 App ID 与 App Secret。
+服务端地址、MySQL、Redis、存储目录和飞书回调地址可在其中调整；敏感值通过前一步设置的环境变量注入。
 
 ### 4. 构建并启动后端
 
 ```bash
-mkdir build && cd build
-cmake ..
-make -j$(nproc)
-./bin/pan_ult_server
+cmake -S . -B build -DBUILD_TESTS=ON
+cmake --build build -j"$(nproc)"
+./build/backend/pan_ult_server
 ```
+
+首次只需构建后端、不运行测试时，可将 `BUILD_TESTS` 设为 `OFF`。当前后端入口仍是占位实现，因此程序启动仅用于验证依赖链接和构建流程，尚不会连接 MySQL、Redis 或飞书。
 
 ### 5. 启动前端
 
